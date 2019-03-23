@@ -1,0 +1,35 @@
+# Harden SSH Access
+
+These steps have been verified on CentOS 7. This is for RHEL/CentOS only.
+
+## Change the default SSH Port
+
+1. Change the port from the sshd config
+`$vi /etc/ssh/sshd_config`
+Add a new port under the line
+`# Port 22`
+
+Avoid port conflict with [the default TCP/UDP list](https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers)
+
+2. For SELinux, the new ssh port has be configured by semanage
+```
+$ yum provides /usr/sbin/semanage
+$ yum install policycoreutils-python
+$ semanage port -a -t sshportt -p tcp $PORT
+```
+
+3. Configure the default public zone for firewall
+```
+$ firewall-cmd --permanent --zone=public --add-port=$PORT/tcp
+$ firewall-cmd --reload
+```
+
+4. Block direct root SSH access `PermitRootLogin no` in /etc/ssh/sshd_config
+
+5. Restart sshd
+```
+$ systemctl restart sshd
+```
+
+
+6. Install and configure _fail2ban_
