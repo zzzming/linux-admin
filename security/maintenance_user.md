@@ -10,6 +10,7 @@ Create a maintenance user with root previlidges
 `$ sudo passwd maint`
 
 3. Use the usermod command to add the user to the wheel group (By default, on CentOS, members of the wheel group have sudo privileges) 
+
 `$ sudo usermod -aG wheel maint`
 
 4. Test new user:
